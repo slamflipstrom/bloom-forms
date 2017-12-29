@@ -2,6 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 
 import ErrorTip from '../error-tip'
+import { requiredPropsLogger } from '../required-props-logger'
 
 import '../styles/inputs.scss'
 import '../styles/radio-input.scss'
@@ -11,27 +12,7 @@ class RadioGroup extends React.Component {
     const requiredProps = ['name', 'options']
     const recommendedProps = ['onChange']
 
-    const missingRequired = requiredProps.filter(field => {
-      return !this.props[field] && (this.props[field] !== false)
-    })
-
-    const missingRecommended = recommendedProps.filter(field => {
-      return !this.props[field] && (this.props[field] !== false)
-    })
-
-    const missingOneOrOther = (this.props.formData && (Object.keys(this.props.formData).indexOf(this.props.name) === -1)) || !this.props.value
-
-    if (missingRequired.length) {
-      console.log(`%c Missing required props in RadioGroup with name ${this.props.name}: ${missingRequired.toString()}`, 'color: red')
-    }
-
-    if (missingOneOrOther) {
-      console.log(`%c Missing either value or formData in RadioGroup with name ${this.props.name}. Must supply one or the other.`, 'color: red')
-    }
-
-    if (missingRecommended.length) {
-      console.log(`%c Missing recommended props in RadioGroup with name ${this.props.name}: ${missingRecommended.toString()}`, 'color: orange')
-    }
+    requiredPropsLogger(this.props, requiredProps, recommendedProps, true)
   }
 
   render() {
@@ -48,11 +29,9 @@ class RadioGroup extends React.Component {
       attr.required = true;
     }
 
-    let val
-    if (!value && formData && formData[name]) {
-      val = formData[name]
-    } else {
-      val = value
+    let err = error
+    if (Object.keys(this.props).indexOf('error') === -1 && formData && (Object.keys(formData).indexOf(name) > -1)) {
+      err = formData[name].error
     }
 
     return (
@@ -65,21 +44,32 @@ class RadioGroup extends React.Component {
             document.getElementById(id).click()
           }
 
+          if (Object.keys(this.props).indexOf('value') === -1 && formData && (Object.keys(formData).indexOf(name) > -1)) {
+            attr.value = formData[name].value
+            attr.checked = formData[name].value === id
+          } else {
+            attr.value = value
+            attr.checked = value === id
+          }
+
           return (
             <label className='Input-label Input--radio-label Input-label--inline' htmlFor={ name } onBlur={ props.onBlur }
               onClick={ clickForward } id={ `${ name }-label` } key={ `radio-${name}-${id}` }>
-              <input type='radio' value={ val } name={ name } id={ id } onChange={ props.onChange }
-                checked={ val === id } data-validate={ validateAs } { ...attr }
+              <input
                 className={ `Input Input--radio u-sr-only ${ className ? className : '' } ${ error ? 'Input--invalid' : '' }` }
+                data-validate={ validateAs }
+                id={ id } name={ name }
+                onChange={ props.onChange }
+                type='radio' { ...attr }
               />
               <div className={ `Input--radio-placeholder non-sr-only ${ value === id ? 'is-checked' : '' }` }></div>
               <span className={ labelTextClasses }>
                 { label }{ attr.required && <span>{ '\u00A0' }*<span className='u-sr-only'> required field</span></span> }
               </span>
-              { error ? <ErrorTip contents={ error } /> : '' }
             </label>
           )
         }) }
+        { err ? <ErrorTip contents={ err } /> : '' }
       </radiogroup>
     )
   }
