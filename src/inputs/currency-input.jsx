@@ -29,7 +29,7 @@ class CurrencyInput extends React.Component {
     }
 
     let err = error
-    if (!value && (Object.keys(formData).indexOf(name) > -1)) {
+    if (Object.keys(this.props).indexOf('value') === -1 && formData && (Object.keys(formData).indexOf(name) > -1)) {
       attr.value = formData[name].value
       err = formData[name].error
     } else {

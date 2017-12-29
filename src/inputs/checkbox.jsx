@@ -29,7 +29,7 @@ class Checkbox extends React.Component {
     }
 
     let err = error
-    if (formData && (Object.keys(formData).indexOf(name) > -1)) {
+    if (Object.keys(this.props).indexOf('checked') === -1 && formData && (Object.keys(formData).indexOf(name) > -1)) {
       attr.checked = formData[name].value
       err = formData[name].error || error
     } else {
