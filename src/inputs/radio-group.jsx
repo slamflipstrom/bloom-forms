@@ -8,7 +8,7 @@ import '../styles/radio-input.scss'
 
 class RadioGroup extends React.Component {
   componentDidMount() {
-    const requiredProps = ['name', 'options', 'value']
+    const requiredProps = ['name', 'options']
     const recommendedProps = ['onChange']
 
     const missingRequired = requiredProps.filter(field => {
@@ -19,8 +19,14 @@ class RadioGroup extends React.Component {
       return !this.props[field] && (this.props[field] !== false)
     })
 
+    const missingOneOrOther = (this.props.formData && (Object.keys(this.props.formData).indexOf(this.props.name) === -1)) || !this.props.value
+
     if (missingRequired.length) {
       console.log(`%c Missing required props in RadioGroup with name ${this.props.name}: ${missingRequired.toString()}`, 'color: red')
+    }
+
+    if (missingOneOrOther) {
+      console.log(`%c Missing either value or formData in RadioGroup with name ${this.props.name}. Must supply one or the other.`, 'color: red')
     }
 
     if (missingRecommended.length) {
@@ -30,7 +36,7 @@ class RadioGroup extends React.Component {
 
   render() {
     let {
-      className, containerClass, error,
+      className, containerClass, error, formData,
       name, labelClass, legend, options, value,
       validateAs, ...props } = this.props;
     let labelTextClasses = `Input-label-text ${ labelClass ? labelClass : '' }`;
@@ -41,6 +47,14 @@ class RadioGroup extends React.Component {
       attr['aria-required'] = true;
       attr.required = true;
     }
+
+    let val
+    if (!value && formData && formData[name]) {
+      val = formData[name]
+    } else {
+      val = value
+    }
+
     return (
       <radiogroup className={ containerClass }>
         { legend && <legend className='Input-legend'>{ legend }</legend> }
@@ -54,8 +68,8 @@ class RadioGroup extends React.Component {
           return (
             <label className='Input-label Input--radio-label Input-label--inline' htmlFor={ name } onBlur={ props.onBlur }
               onClick={ clickForward } id={ `${ name }-label` } key={ `radio-${name}-${id}` }>
-              <input type='radio' value={ value } name={ name } id={ id } onChange={ props.onChange }
-                checked={ value === id } data-validate={ validateAs } { ...attr }
+              <input type='radio' value={ val } name={ name } id={ id } onChange={ props.onChange }
+                checked={ val === id } data-validate={ validateAs } { ...attr }
                 className={ `Input Input--radio u-sr-only ${ className ? className : '' } ${ error ? 'Input--invalid' : '' }` }
               />
               <div className={ `Input--radio-placeholder non-sr-only ${ value === id ? 'is-checked' : '' }` }></div>
@@ -75,6 +89,7 @@ RadioGroup.propTypes = {
   className: PropTypes.string,
   containerClass: PropTypes.string,
   error: PropTypes.string,
+  formData: PropTypes.object,
   labelClass: PropTypes.string,
   legend: PropTypes.oneOfType([
     PropTypes.string,
@@ -94,7 +109,7 @@ RadioGroup.propTypes = {
   ).isRequired,
   required: PropTypes.bool,
   validateAs: PropTypes.string,
-  value: PropTypes.string.isRequired
+  value: PropTypes.string
 };
 
 export default RadioGroup;

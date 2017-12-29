@@ -17,8 +17,14 @@ class Checkbox extends React.Component {
       return !this.props[field] && (this.props[field] !== false)
     })
 
+    const missingOneOrOther = (this.props.formData && (Object.keys(this.props.formData).indexOf(this.props.name) === -1)) || (!(this.props.checked || (this.props.checked === false)))
+
     if (missingRequired.length) {
       console.log(`%c Missing required props in Checkbox with name ${this.props.name}: ${missingRequired.toString()}`, 'color: red')
+    }
+
+    if (missingOneOrOther) {
+      console.log(`%c Missing either 'checked' or 'formData' in Checkbox with name ${this.props.name}`, 'color: red')
     }
 
     if (missingRecommended.length) {
@@ -28,7 +34,7 @@ class Checkbox extends React.Component {
 
   render() {
     let {
-      checked, className, errors,
+      checked, className, errors, formData,
       name, label, labelClass,
       showLabel, showLabelBeforeCheckbox,
       validateAs, ...props } = this.props;
@@ -38,6 +44,13 @@ class Checkbox extends React.Component {
     if (props.required) {
       attr['aria-required'] = true;
       attr.required = true;
+    }
+
+    let val
+    if (formData && (Object.keys(formData).indexOf('name') > -1)) {
+      val = formData[name]
+    } else {
+      val = checked
     }
 
     const labelText = (
@@ -50,8 +63,8 @@ class Checkbox extends React.Component {
       <label style={{paddingBottom: '2px'}} className='Input-label Input-label--inline Input--checkbox'
         id={ `${name}-label` }>
         { showLabelBeforeCheckbox && labelText }
-        <div className={ `non-sr-only Input--checkbox-placeholder ${ checked ? 'glyphicon glyphicon-ok is-checked' : '' }` }></div>
-        <input type='checkbox' checked={ checked } name={ name } id={ name } onChange={ props.onChange }
+        <div className={ `non-sr-only Input--checkbox-placeholder ${ val ? 'glyphicon glyphicon-ok is-checked' : '' }` }></div>
+        <input type='checkbox' checked={ val } name={ name } id={ name } onChange={ props.onChange }
           className={ `u-sr-only Input Input--text ${ className ? className : '' } ${ errors ? 'Input--invalid' : '' }` }
           data-validate={ validateAs } { ...attr } />
         { !showLabelBeforeCheckbox && labelText }
@@ -64,9 +77,10 @@ class Checkbox extends React.Component {
 }
 
 Checkbox.propTypes = {
-  checked: PropTypes.bool.isRequired,
+  checked: PropTypes.bool,
   className: PropTypes.string,
   errors: PropTypes.string,
+  formData: PropTypes.object,
   name: PropTypes.string.isRequired,
   label: PropTypes.oneOfType([
       PropTypes.string,
