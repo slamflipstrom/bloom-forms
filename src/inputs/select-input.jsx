@@ -200,7 +200,7 @@ class SelectInput extends React.Component {
         ? (
           <li key={ `${ name }-opt-${i}` } onClick={ (e) => this.selectOpt(opt.value) }>
             <button id={ `input-placeholder-${opt.value}` }
-            `tabIndex={ this.state.hasUsedPresentationElements ? '0' : '-1' }
+              tabIndex={ this.state.hasUsedPresentationElements ? '0' : '-1' }
               aria-labelledby={ `${ name }-opt-${i}-text` }>
               <span id={ `${ name }-opt-${i}-text` }>
                 { opt.label }
@@ -238,7 +238,7 @@ class SelectInput extends React.Component {
         );
     });
 
-    const placeholderOpts = renderPlaceholderOptions(sortedOpts)
+    const placeholderOpts = this.renderPlaceholderOptions(sortedOpts)
 
     let attr = {};
 
@@ -375,9 +375,10 @@ SelectInput.propTypes = {
     PropTypes.string,
     PropTypes.number,
     PropTypes.arrayOf(
-      PropTypes.oneOfType(
+      PropTypes.oneOfType([
         PropTypes.string,
         PropTypes.number
+      ])
     )
   ])
 }
