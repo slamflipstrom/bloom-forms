@@ -331,9 +331,9 @@ class SelectInput extends React.Component {
     )
 
     return (
-      <div onBlur={(e) => this.closeOpts(e)}>
+      <div onBlur={(e) => this.closeOpts(e)} className={ `SelectInput-wrapper ${ containerClass || '' }` }>
         { placeholderElement }
-        <label className={ `Input-label SelectInput ${ containerClass || '' } u-sr-only` } htmlFor={ name }
+        <label className={ `Input-label SelectInput u-sr-only` } htmlFor={ name }
           id={ `${ name }-label` } tabIndex={ -1 } aria-hidden>
           <select name={ name } id={ name } className='u-sr-only' data-validate={ validateAs }
             onChange={ (e) => this.selectOpt(e.target.value) } aria-labelledby={ `${ name }-label-text` }
