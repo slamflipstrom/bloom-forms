@@ -18,7 +18,7 @@ class TextInput extends React.Component {
   render() {
     const {
       className, containerClass, disabled, error, formData, isPassword,
-      name, label, labelClass, placeholder,
+      name, label, labelClass, maxLength, placeholder,
       showLabel, validateAs, value, ...props } = this.props;
     const labelTextClasses = `Input-label-text ${ labelClass ? labelClass : '' }${ showLabel ? '' : ' u-sr-only' }`;
 
@@ -37,6 +37,8 @@ class TextInput extends React.Component {
       attr.value = value
     }
 
+    attr.value = maxLength ? attr.value.slice(0, maxLength) : attr.value 
+
     if (!props.onChange) {
       attr.readOnly = true
     }
@@ -50,7 +52,7 @@ class TextInput extends React.Component {
         <input type={ isPassword ? 'password' : 'text' } name={ name } id={ name }
           onChange={ props.onChange } onKeyDown={ props.onKeyDown } disabled={ disabled }
           className={ `Input Input--text ${ className ? className : '' } ${ error ? 'Input--invalid' : '' }` }
-          data-validate={ validateAs }  placeholder={ placeholder } maxLength='150' { ...attr }
+          data-validate={ validateAs }  placeholder={ placeholder } maxLength={maxLength} { ...attr }
           autoComplete='new-password'
         />
         { err ? <ErrorTip contents={ err } /> : '' }
@@ -70,6 +72,7 @@ TextInput.propTypes = {
       PropTypes.element
     ]).isRequired,
   labelClass: PropTypes.string,
+  maxLength: PropTypes.number,
   name: PropTypes.string.isRequired,
   placeholder: PropTypes.string,
   onBlur: PropTypes.func,

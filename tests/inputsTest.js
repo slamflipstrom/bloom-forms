@@ -139,6 +139,20 @@ describe('<TextInput />', function() {
 
     assert.ok((textinput).text().indexOf(exampleLabel) >= 0);
   })
+
+  it ('limits input value according to maxLength prop', function() {
+    const exampleLabel = 'Test Label';
+    const textinput = Enzyme.mount(<TextInput label={ exampleLabel } name='textinput' value='maxLength Test' maxLength={5} />);
+
+    textinput.find('TextInput').simulate('change', {target: {value: 'My new value'}});
+
+
+    console.log('textinput length!!!!', textinput.text().length)
+    console.log('textinput text!!!!', textinput.text())
+    console.log('textinput!!!!', textinput)
+
+    assert.ok((textinput).text().length <= 5);
+  })
 })
 
 describe('<ToggleSwitch />', function() {
