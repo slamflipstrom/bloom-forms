@@ -141,7 +141,7 @@ describe('<TextInput />', function() {
   })
 
   it ('limits input value according to maxLength prop', function() {
-    const exampleLabel = 'Test Label';
+    const exampleLabel = 'Test';
     const textinput = Enzyme.mount(<TextInput label={ exampleLabel } name='textinput' value='maxLength Test' maxLength={5} />);
 
     textinput.find('TextInput').simulate('change', {target: {value: 'My new value'}});
