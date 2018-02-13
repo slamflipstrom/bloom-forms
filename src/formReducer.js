@@ -80,6 +80,7 @@ export default function formReducer(state = {}, action) {
       console.log('delete FORM ERROR action.type:', action.type)
       console.log('newForms:', newForms)
       console.log('newForms action.formId:', newForms[action.formId])
+      console.log('newForms action.formId:', newForms[action.formId].fields)
       console.log('newForms action.fieldName:', newForms[action.fieldName])
       if (
         newForms[action.formId] &&
@@ -100,6 +101,7 @@ export default function formReducer(state = {}, action) {
       if (!allOtherErrors.length) {
         newForms[action.formId].isValid = true
       }
+      console.log('values should not be replaced by strings', { ...newForms })
       return { ...newForms }
 
     case 'TRIGGER_MULTIPLE_CHECK': {
