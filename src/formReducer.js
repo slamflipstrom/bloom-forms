@@ -4,6 +4,9 @@ export default function formReducer(state = {}, action) {
 
   switch (action.type) {
     case 'ADD_FORM_ERROR':
+      console.log('ADD FORM ERROR action.type:', action.type)
+      console.log('newForms1:', newForms)
+      console.log('newForms1 action.formId:', newForms[action.formId])
       if (!newForms[action.formId]) {
         newForms[action.formId] = {}
       }
@@ -18,6 +21,7 @@ export default function formReducer(state = {}, action) {
       return { ...newForms }
 
     case 'CHECK_COMPLETED': {
+      console.log('check completed!', action.type)
       let formId = action.formId
       // let fieldName = action.fieldName
       // if (!formId) {
@@ -35,6 +39,7 @@ export default function formReducer(state = {}, action) {
     }
 
     case 'CLEAR_FORM':
+      console.log('clear form!', action.type)
       newForms[action.formId] = {}
       return { ...newForms }
 
@@ -72,6 +77,10 @@ export default function formReducer(state = {}, action) {
       return { ...newForms }
 
     case 'DELETE_FORM_ERROR':
+      console.log('delete FORM ERROR action.type:', action.type)
+      console.log('newForms:', newForms)
+      console.log('newForms action.formId:', newForms[action.formId])
+      console.log('newForms action.fieldName:', newForms[action.fieldName])
       if (
         newForms[action.formId] &&
         newForms[action.formId].fields &&
